@@ -13,7 +13,7 @@ pydantic-settings==2.2.1
 # ─── Database ORM (async PostgreSQL) ─────────────────────────────────────────
 sqlalchemy[asyncio]==2.0.29
 asyncpg==0.29.0
-alembic==1.13.1
+alembic==1.18.5
 
 # ─── Security ────────────────────────────────────────────────────────────────
 bcrypt==4.1.2
