@@ -18,4 +18,4 @@ mypy>=1.9.0
 pytest>=8.0.0
 langchain>=0.1.12
 langgraph>=0.0.26
-email-validator>=2.1.1
+email-validator>=2.3.0
