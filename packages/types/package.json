@@ -1,0 +1,14 @@
+{
+  "name": "@hiremind/types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript interface contracts for HireMind AI",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

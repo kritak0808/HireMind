@@ -1,0 +1,17 @@
+{
+  "name": "hiremind-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Autonomous Enterprise Hiring Intelligence Platform",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build",
+    "lint:web": "pnpm --filter web lint",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "dev:all": "docker-compose up --build"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "hiremind-api-gateway"
+version = "0.1.0"
+description = "Core API gateway for HireMind AI transactional services"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.0"
+pydantic = "^2.6.4"
+libs-config = { path = "../../libs/config", develop = true }
+libs-telemetry = { path = "../../libs/telemetry", develop = true }
+libs-security = { path = "../../libs/security", develop = true }
+libs-auth = { path = "../../libs/auth", develop = true }
+libs-db-core = { path = "../../libs/db-core", develop = true }
+libs-shared-schemas = { path = "../../libs/shared-schemas", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

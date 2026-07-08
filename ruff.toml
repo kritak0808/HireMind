@@ -1,0 +1,24 @@
+# Ruff configuration for HireMind AI monorepo
+
+# Target Python version
+target-version = "py312"
+
+# Set line length limit
+line-length = 160
+
+# Lint rules
+[lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501", # Ignore line length warnings
+    "W291", # Ignore trailing whitespace
+    "W293"  # Ignore blank line whitespace
+]
+
+[lint.per-file-ignores]
+# Ignore circular import references and import orders in SQLAlchemy models
+"libs/db-core/src/models/*" = ["E402", "F821"]
+"libs/db_core/src/models/*" = ["E402", "F821"]
+# Ignore sys.path import order helpers in dtos
+"libs/shared-schemas/src/dtos/__init__.py" = ["E402"]
+"libs/shared_schemas/src/dtos/__init__.py" = ["E402"]

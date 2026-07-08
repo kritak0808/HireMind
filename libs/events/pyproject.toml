@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "hiremind-events"
+version = "0.1.0"
+description = "Event-driven system primitives and Redis Event Bus client for HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+redis = { extras = ["hiredis"], version = "^5.0.3" }
+pydantic = "^2.6.4"
+libs-config = { path = "../config", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

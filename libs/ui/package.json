@@ -1,0 +1,20 @@
+{
+  "name": "@hiremind/ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design system and visual primitives skeleton for HireMind AI",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "react": "^19.0.0",
+    "@types/react": "^19.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

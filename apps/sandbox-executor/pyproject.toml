@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "hiremind-sandbox-executor"
+version = "0.1.0"
+description = "Isolated coding sandbox runner for candidate challenges in HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.6.4"
+docker = "^7.0.0"
+libs-config = { path = "../../libs/config", develop = true }
+libs-telemetry = { path = "../../libs/telemetry", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

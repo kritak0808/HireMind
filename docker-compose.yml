@@ -1,0 +1,200 @@
+version: '3.8'
+
+services:
+  # Primary DB
+  postgres:
+    image: postgres:16-alpine
+    container_name: hiremind_postgres
+    environment:
+      POSTGRES_DB: hiremind_db
+      POSTGRES_USER: hiremind_user
+      POSTGRES_PASSWORD: hiremind_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hiremind_user -d hiremind_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Cache and Task Broker
+  redis:
+    image: redis:7-alpine
+    container_name: hiremind_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Vector Database for semantic search
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: hiremind_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrantdata:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Object Storage (MinIO S3-Compatible)
+  minio:
+    image: minio/minio:RELEASE.2024-01-28T22-35-53Z
+    container_name: hiremind_minio
+    environment:
+      MINIO_ROOT_USER: minio_admin_user
+      MINIO_ROOT_PASSWORD: minio_admin_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # SMTP Testing Service (Mailpit)
+  mailpit:
+    image: axllent/mailpit:v1.15
+    container_name: hiremind_mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # Database Visual Client (pgAdmin)
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: hiremind_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@hiremind.ai
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "5050:80"
+
+  # FastAPI API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: hiremind_api_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://hiremind_user:hiremind_password@postgres:5432/hiremind_db
+      - REDIS_URL=redis://redis:6379/0
+      - QDRANT_URL=http://qdrant:6333
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minio_admin_user
+      - MINIO_SECRET_KEY=minio_admin_password
+      - MINIO_SECURE=false
+      - SMTP_HOST=mailpit
+      - SMTP_PORT=1025
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  # Next.js Web Dashboard Portal
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: hiremind_web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api-gateway:8000
+    depends_on:
+      - api-gateway
+
+  # Celery Background Workers
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: hiremind_celery_worker
+    command: celery -A libs.tasks worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://hiremind_user:hiremind_password@postgres/hiremind_db
+      - REDIS_URL=redis://redis:6379/0
+      - QDRANT_URL=http://qdrant:6333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # OpenTelemetry Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    container_name: hiremind_otel_collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./infrastructure/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - jaeger
+
+  # Prometheus Metrics Scraper
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    container_name: hiremind_prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ./infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infrastructure/alert.rules:/etc/prometheus/alert.rules
+    ports:
+      - "9090:9090"
+    depends_on:
+      - otel-collector
+
+  # Grafana Dashboards
+  grafana:
+    image: grafana/grafana:10.3.3
+    container_name: hiremind_grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+  # Jaeger Distributed Traces Collector
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    container_name: hiremind_jaeger
+    ports:
+      - "16686:16686"
+      - "4317"
+
+  # Loki Log Aggregator
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: hiremind_loki
+    ports:
+      - "3100:3100"
+
+volumes:
+  pgdata:
+  redisdata:
+  qdrantdata:
+  miniodata:

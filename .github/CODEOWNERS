@@ -1,0 +1,13 @@
+# Global owners
+* @hiremind/platform-team
+
+# Backend specific owners
+/apps/api-gateway/ @hiremind/backend-team
+/libs/ @hiremind/backend-team
+
+# Frontend specific owners
+/apps/web/ @hiremind/frontend-team
+
+# DevOps & CI/CD config owners
+/.github/ @hiremind/devops-team
+/docker-compose*.yml @hiremind/devops-team

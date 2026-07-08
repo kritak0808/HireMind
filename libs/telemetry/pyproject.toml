@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "hiremind-telemetry"
+version = "0.1.0"
+description = "Observability, logging, and tracing SDK for HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+opentelemetry-api = "^1.24.0"
+opentelemetry-sdk = "^1.24.0"
+opentelemetry-instrumentation-fastapi = "^0.45b0"
+python-json-logger = "^2.0.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

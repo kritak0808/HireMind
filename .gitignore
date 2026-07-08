@@ -1,0 +1,53 @@
+# Node dependencies
+node_modules/
+.pnpm-store/
+jspm_packages/
+web_modules/
+.next/
+out/
+build/
+dist/
+
+# Python dependencies
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# IDE settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+*.log
+
+# PostgreSQL Data & Logs
+pgdata/
+pgdata_local/
+postgres_5434_dev.log

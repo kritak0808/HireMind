@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "hiremind-config"
+version = "0.1.0"
+description = "Centralized environment configuration management for HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic-settings = "^2.2.1"
+pydantic = "^2.6.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "hiremind-db-core"
+version = "0.1.0"
+description = "Database connections, models core and session providers for HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.28" }
+asyncpg = "^0.29.0"
+libs-config = { path = "../config", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

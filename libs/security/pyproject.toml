@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "hiremind-security"
+version = "0.1.0"
+description = "Security, cryptography, authentication and RBAC library for HireMind AI"
+authors = ["HireMind AI Engineering <engineering@hiremind.ai>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyjwt = { extras = ["crypto"], version = "^2.8.0" }
+bcrypt = "^4.1.2"
+pydantic = "^2.6.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

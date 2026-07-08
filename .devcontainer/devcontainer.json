@@ -1,0 +1,23 @@
+{
+  "name": "HireMind AI Dev Workspace",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "api_gateway",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "charliermarsh.ruff",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "ms-vscode-remote.remote-containers",
+        "editorconfig.editorconfig"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 8000, 8001, 5432, 6379, 6333],
+  "postCreateCommand": "pnpm install && pip install -r requirements-dev.txt",
+  "remoteUser": "vscode"
+}
