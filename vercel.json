@@ -1,0 +1,10 @@
+{
+  "buildCommand": "pnpm run build:web",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "rootDirectory": ".",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@hiremind_api_url"
+  }
+}

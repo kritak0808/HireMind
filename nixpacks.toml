@@ -1,0 +1,18 @@
+# nixpacks.toml — HireMind AI Nixpacks Build Configuration
+# Used by Railway when building without Docker.
+# Ensures Python 3.12, native build deps, and correct PYTHONPATH.
+
+[phases.setup]
+nixPkgs = ["python312", "gcc", "postgresql_15", "libffi"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "uvicorn main:app --app-dir apps/api-gateway/src --host 0.0.0.0 --port ${PORT:-8000}"
+
+[variables]
+PYTHONPATH = "libs/config/src:libs/telemetry/src:libs/security/src:libs/auth/src:libs/db-core/src:libs/shared-schemas/src:libs/events/src:apps/api-gateway/src:libs"

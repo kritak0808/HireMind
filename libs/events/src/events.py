@@ -32,8 +32,14 @@ class EventBus:
 # 3. Redis-Based Pub/Sub Implementation
 class RedisEventBus(EventBus):
     def __init__(self, redis_url: str = settings.REDIS_URL) -> None:
-        self.redis_client = aioredis.from_url(redis_url, decode_responses=True)
-        self.pubsub = self.redis_client.pubsub()
+        self._redis_url = redis_url
+        self.redis_client = None
+        self.pubsub = None
+        try:
+            self.redis_client = aioredis.from_url(redis_url, decode_responses=True)
+            self.pubsub = self.redis_client.pubsub()
+        except Exception as e:
+            logger.warning(f"Redis client initialization failed (Redis may be unavailable): {str(e)}")
 
     async def publish(self, event: BaseEvent) -> None:
         """Publishes an event packet onto the corresponding event channel.
@@ -41,6 +47,9 @@ class RedisEventBus(EventBus):
         Failures are non-fatal: if Redis is unavailable (e.g. local dev without Redis),
         the error is logged as a warning and execution continues normally.
         """
+        if self.redis_client is None:
+            logger.warning(f"Redis unavailable — skipping event publish: {event.event_type}")
+            return
         channel = f"event:{event.event_type}"
         data = event.model_dump_json()
         try:
@@ -51,6 +60,9 @@ class RedisEventBus(EventBus):
 
     async def subscribe(self, event_type: str, handler: Callable[[BaseEvent], Any]) -> None:
         """Subscribes an execution function to a target event channel."""
+        if self.pubsub is None:
+            logger.warning(f"Redis unavailable — skipping subscribe to: {event_type}")
+            return
         channel = f"event:{event_type}"
         await self.pubsub.subscribe(**{channel: self._wrap_handler(handler)})
         logger.info(f"Registered subscriber to channel: {channel}")
@@ -68,12 +80,17 @@ class RedisEventBus(EventBus):
         return message_wrapper
 
     async def start_listening_loop(self) -> None:
-        """Runs the background reading loop waiting for messages."""
+        """Runs the background reading loop waiting for messages.
+        Exits gracefully if Redis becomes unavailable — does NOT crash the process.
+        """
+        if self.pubsub is None:
+            logger.warning("Redis PubSub unavailable — event listener loop will not start.")
+            return
         logger.info("Starting Redis event subscriber loop...")
         try:
             while True:
                 await self.pubsub.get_message(ignore_subscribe_messages=True, timeout=1.0)
                 await asyncio.sleep(0.01)
         except Exception as e:
-            logger.critical(f"PubSub loop crashed: {str(e)}")
-            raise
+            logger.warning(f"Redis PubSub loop exited (Redis may be unavailable): {str(e)}")
+

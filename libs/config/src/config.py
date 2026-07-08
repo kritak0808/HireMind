@@ -1,5 +1,5 @@
 import os
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -16,16 +16,41 @@ class AppConfig(BaseSettings):
     JWT_ALGORITHM: str = Field(default="HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=60)
 
-    CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://127.0.0.1:3000"],
-        description="Allowed origins for security validations"
+    # CORS_ORIGINS stored as a single string, parsed via property.
+    # Railway/Vercel env vars set this as comma-separated string.
+    # e.g. CORS_ORIGINS="https://hiremind.vercel.app,https://preview.vercel.app"
+    # pydantic-settings tries to JSON-decode List fields which breaks on plain strings,
+    # so we store as str and expose a parsed_cors_origins property.
+    CORS_ORIGINS_STR: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000",
+        alias="CORS_ORIGINS",
+        description="Comma-separated list of allowed CORS origins"
     )
+
+    @property
+    def CORS_ORIGINS(self) -> List[str]:
+        """Parse comma-separated CORS_ORIGINS string into a list."""
+        return [origin.strip() for origin in self.CORS_ORIGINS_STR.split(",") if origin.strip()]
 
     # Core Relational Storage
     DATABASE_URL: str = Field(
         default="postgresql+asyncpg://hiremind_user:hiremind_password@localhost:5432/hiremind_db",
         description="Primary Postgres async connection string"
     )
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def fix_database_url_scheme(cls, v: str) -> str:
+        """Railway injects DATABASE_URL with 'postgresql://' or 'postgres://' scheme.
+        SQLAlchemy async engine requires 'postgresql+asyncpg://'.
+        This validator transparently corrects the scheme at runtime.
+        """
+        if isinstance(v, str):
+            if v.startswith("postgres://"):
+                return v.replace("postgres://", "postgresql+asyncpg://", 1)
+            if v.startswith("postgresql://"):
+                return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
 
     # Cache & Event Infrastructure Broker
     REDIS_URL: str = Field(
@@ -50,7 +75,8 @@ class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=os.getenv("ENV_FILE_PATH", ".env"),
         env_file_encoding="utf-8",
-        extra="ignore"
+        extra="ignore",
+        populate_by_name=True,
     )
 
     @field_validator("ENVIRONMENT")

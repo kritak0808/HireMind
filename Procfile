@@ -1,0 +1,1 @@
+web: PYTHONPATH=libs/config/src:libs/telemetry/src:libs/security/src:libs/auth/src:libs/db-core/src:libs/shared-schemas/src:libs/events/src:apps/api-gateway/src:libs uvicorn main:app --app-dir apps/api-gateway/src --host 0.0.0.0 --port ${PORT:-8000}
