@@ -17,9 +17,13 @@ alembic==1.13.1
 
 # ─── Security ────────────────────────────────────────────────────────────────
 bcrypt==4.1.2
-python-jose[cryptography]==3.3.0
+# PyJWT is used throughout security.py (jwt.encode, jwt.decode, jwt.ExpiredSignatureError)
+# python-jose was incorrectly listed here — removed. PyJWT is the correct library.
+PyJWT[crypto]==2.8.0
 pyotp==2.9.0
 passlib[bcrypt]==1.7.4
+# argon2-cffi is used by crypto.py (PasswordHasher) for Argon2ID password hashing
+argon2-cffi==23.1.0
 
 # ─── Redis (async) ───────────────────────────────────────────────────────────
 redis==5.0.3

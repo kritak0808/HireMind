@@ -9,6 +9,23 @@ workspace_root = "c:\\Users\\krita\\Documents\\HireMind"
 if workspace_root not in sys.path:
     sys.path.insert(0, workspace_root)
 
+# Inject all lib src/ directories so bare imports like 'from models import ...'
+# resolve correctly — same logic as path_setup.py used at runtime.
+_lib_src_dirs = [
+    os.path.join(workspace_root, "libs"),
+    os.path.join(workspace_root, "libs", "config", "src"),
+    os.path.join(workspace_root, "libs", "telemetry", "src"),
+    os.path.join(workspace_root, "libs", "security", "src"),
+    os.path.join(workspace_root, "libs", "auth", "src"),
+    os.path.join(workspace_root, "libs", "db-core", "src"),
+    os.path.join(workspace_root, "libs", "shared-schemas", "src"),
+    os.path.join(workspace_root, "libs", "events", "src"),
+    os.path.join(workspace_root, "apps", "api-gateway", "src"),
+]
+for _d in _lib_src_dirs:
+    if os.path.isdir(_d) and _d not in sys.path:
+        sys.path.insert(0, _d)
+
 # Helper function to rewrite source code imports at compile time
 def rewrite_source(content: str, path: str) -> str:
     modified = content
