@@ -13,7 +13,7 @@
     "lint": "eslint src/**/*.ts"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
+    "typescript": "^6.0.3",
     "react": "^19.0.0",
     "@types/react": "^19.0.0"
   },
