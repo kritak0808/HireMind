@@ -1,144 +1,464 @@
-# HireMind AI — Autonomous Enterprise Hiring Intelligence Platform
+# HireMind AI
 
-HireMind AI is a production-grade, state-of-the-art enterprise hiring intelligence platform designed to automate talent sourcing, parsing, screening, coding interviews, and executive analytics.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js"/>
+  <img src="https://img.shields.io/badge/FastAPI-Production-009688?logo=fastapi"/>
+  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-17-336791?logo=postgresql"/>
+  <img src="https://img.shields.io/badge/Redis-7-red?logo=redis"/>
+  <img src="https://img.shields.io/badge/OpenAI-Gemini-Claude-AI-success"/>
+  <img src="https://img.shields.io/badge/License-MIT-green"/>
+</p>
 
-[![CI Status](https://img.shields.io/badge/CI-Passed-green.svg)](https://github.com/hiremind/platform)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](LICENSE)
-[![Uptime](https://img.shields.io/badge/Uptime-99.98%25-green.svg)](https://status.hiremind.ai)
-[![Security Level](https://img.shields.io/badge/Security-A%2B-brightgreen.svg)](SECURITY.md)
-
----
-
-## 🚀 Key Features
-
-* **Recruitment Core:** Automated applicant matching, parsing, and pipeline organization.
-* **AI Runtime Platform:** Version-controlled LLM execution, semantic cost accounting, and safety shields.
-* **Coding Sandbox:** Compiler sandbox supporting Python, Go, and Rust with security checkups and plagiarism analysis.
-* **Live Sandbox:** Automated audio/video recording transcription and voice analytics.
-* **Executive Analytics:** Enterprise KPI dashboards, financial projections, and capacity planning.
-* **Governance & Compliance:** Auditable experiments registry, prompt safety metrics, and GDPR candidate data deletion.
-* **Resilience Engineering:** Circuit breaker machines, retry backoff jitter controls, fail-silent caching.
-* **Release QA & Deployments:** Automated quality gates, WCAG accessibility validations, Canary rollout controllers, and rollbacks.
+<p align="center">
+Enterprise-grade AI Recruitment Platform built using FastAPI, Next.js 15, PostgreSQL, Redis, and Multi-Agent AI architecture.
+</p>
 
 ---
 
-## 🏛️ System Architecture
+# Overview
+
+HireMind AI is a modern autonomous recruitment platform that combines Applicant Tracking System (ATS), AI-powered candidate intelligence, resume parsing, interview automation, collaborative hiring workflows, analytics, governance, and enterprise SaaS architecture into a single platform.
+
+The project follows a scalable microservice-inspired architecture and is designed for production deployment using Railway and Vercel.
+
+---
+
+# Features
+
+## Recruitment
+
+- AI Applicant Tracking System (ATS)
+- Job Management
+- Candidate Management
+- Resume Upload & Parsing
+- Interview Scheduling
+- Candidate Pipeline
+- Offer Management
+- Hiring Timeline
+- Recruiter Dashboard
+
+---
+
+## AI Capabilities
+
+- AI Resume Analysis
+- ATS Resume Scoring
+- Candidate Matching
+- AI Copilot
+- AI Interview Assistant
+- Semantic Search
+- RAG Knowledge Base
+- LLM Gateway
+- Multi-Model Support
+  - OpenAI
+  - Gemini
+  - Claude
+  - Cohere
+
+---
+
+## Enterprise Workspace
+
+- Team Collaboration
+- Workspace Calendar
+- Internal Messaging
+- Email Integration
+- Notifications
+- Shared Resources
+- Activity Timeline
+
+---
+
+## Security
+
+- JWT Authentication
+- Refresh Tokens
+- Password Hashing
+- RBAC
+- API Keys
+- Organization Isolation
+- Tenant Support
+- Secure Session Management
+
+---
+
+## Analytics
+
+- Hiring Metrics
+- Candidate Funnel
+- Recruitment KPIs
+- Productivity Analytics
+- Dashboard Reports
+
+---
+
+## SaaS Modules
+
+- Organization Management
+- Identity Management
+- Billing
+- Marketplace
+- Developer Portal
+- API Management
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Next.js 15
+- React 19
+- TypeScript
+- TailwindCSS
+- Framer Motion
+- Zustand
+- Lucide Icons
+
+---
+
+## Backend
+
+- FastAPI
+- Python 3.12
+- SQLAlchemy
+- AsyncPG
+- PostgreSQL
+- Redis
+- JWT Authentication
+- Pydantic v2
+
+---
+
+## AI
+
+- OpenAI
+- Google Gemini
+- Anthropic Claude
+- Cohere
+- RAG
+- Prompt Engineering
+
+---
+
+## DevOps
+
+- Railway
+- Vercel
+- Docker
+- GitHub Actions
+- OpenTelemetry
+- Prometheus
+
+---
+
+# Architecture
 
 ```
-                                  [ Client Browser ]
-                                          |
-                                          v
-                              [ Nginx Gateway Proxy ]
-                                          |
-                        +-----------------+-----------------+
-                        |                                   |
-                        v                                   v
-             [ Next.js Web Frontend ]            [ FastAPI API Gateway ]
-                   (Port 3000)                         (Port 8000)
-                        |                                   |
-                        |                                   v
-                        |                         [ PostgreSQL Database ]
-                        |                             (Port 5432)
-                        |                                   ^
-                        v                                   |
-                [ Redis Cache / Bus ] <------------- [ Celery Worker ]
-                    (Port 6379)
+                   ┌─────────────────────┐
+                   │     Next.js UI      │
+                   └──────────┬──────────┘
+                              │
+                              ▼
+                 ┌────────────────────────┐
+                 │   FastAPI API Gateway  │
+                 └──────────┬─────────────┘
+                            │
+        ┌───────────────────┼────────────────────┐
+        │                   │                    │
+        ▼                   ▼                    ▼
+ Authentication      Recruitment        AI Services
+        │                   │                    │
+        ▼                   ▼                    ▼
+ PostgreSQL             Redis           LLM Gateway
+                                             │
+             ┌─────────────┬───────────────┬──────────────┐
+             ▼             ▼               ▼              ▼
+          OpenAI        Gemini          Claude         Cohere
 ```
 
 ---
 
-## 📂 Repository Structure
+# Project Structure
 
 ```
-├── .github/workflows/    # CI/CD GitHub Actions pipelines
-├── apps/
-│   ├── api-gateway/      # FastAPI gateway endpoints & routers
-│   └── web/              # Next.js UI dashboards
-├── deploy/               # Production compose configuration & k8s manifests
-├── libs/
-│   ├── auth/             # Security context binding & RBAC validations
-│   ├── config/           # Centralized environment validator
-│   ├── db-core/          # Database ORM & models
-│   ├── events/           # Redis Event Bus publisher contracts
-│   ├── security/         # Password hashing (Argon2id) & safety shields
-│   └── telemetry/        # Caching, circuits breakers, QA pipelines
-└── packages/
-    ├── constants/        # Shared Typescript Constants
-    └── types/            # Shared Typescript API Interfaces
+HireMind
+│
+├── apps
+│   ├── api-gateway
+│   └── web
+│
+├── libs
+│   ├── auth
+│   ├── config
+│   ├── db-core
+│   ├── events
+│   ├── sdk
+│   ├── security
+│   ├── shared-schemas
+│   ├── telemetry
+│   └── ui
+│
+├── packages
+│   ├── constants
+│   ├── types
+│   └── utilities
+│
+├── railway.toml
+├── vercel.json
+├── Dockerfile
+└── README.md
 ```
 
 ---
 
-## 🛠️ Getting Started
+# Screenshots
 
-### 1. Prerequisites
-* Python 3.12+
-* Node.js 18+
-* Redis Server
-* PostgreSQL
+> Add your application screenshots here.
 
-### 2. Local Setup
-Clone the repository and install dependency modules:
+```
+screenshots/
+
+dashboard.png
+
+recruitment.png
+
+candidates.png
+
+ai-copilot.png
+
+analytics.png
+```
+
+---
+
+# Installation
+
+## Clone Repository
 
 ```bash
-# Install Node dependencies
+git clone https://github.com/kritak0808/HireMind.git
+
+cd HireMind
+```
+
+---
+
+## Install Dependencies
+
+```bash
 pnpm install
-
-# Install Python requirements
-pip install -r requirements-dev.txt
 ```
 
-Start the local development stack:
-```powershell
-.\start-local.ps1
-```
-This runs the Next.js portal on `http://localhost:3000` and the API gateway on `http://localhost:8000`.
+---
 
-### 3. Docker setup (Production Environment)
-To run the production container stack:
+## Backend
 
 ```bash
-docker-compose -f docker-compose.prod.yml up --build -d
+cd apps/api-gateway/src
+
+python -m uvicorn main:app --reload
 ```
 
-This starts:
-- Nginx reverse proxy gateway (Port 80)
-- Next.js Web Frontend (Port 3000)
-- FastAPI Gateway (Port 8000)
-- PostgreSQL (Port 5432)
-- Redis Cache (Port 6379)
-- Celery Task Worker
+---
+
+## Frontend
+
+```bash
+cd apps/web
+
+pnpm dev
+```
 
 ---
 
-## 🔑 Authentication & Demo Credentials
+# Environment Variables
 
-Authentication utilizes JWT access tokens paired with TOTP multi-factor verification keys. Passwords are encrypted using Argon2id.
+## Backend
 
-The local database seeder creates standard demonstration profiles:
-- **Username:** `user0@hiremind.ai` (up to `user39@hiremind.ai`) or `candidate_0@gmail.com`
-- **Password:** `password123`
+```env
+DATABASE_URL=
+
+REDIS_URL=
+
+JWT_SECRET_KEY=
+
+OPENAI_API_KEY=
+
+GEMINI_API_KEY=
+
+COHERE_API_KEY=
+
+CORS_ORIGINS=
+
+ENVIRONMENT=production
+```
 
 ---
 
-## 📚 Documentations Index
+## Frontend
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Modular layouts and telemetry stack.
-- [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — Event architectures, circuit breakers.
-- [DATABASE.md](DATABASE.md) — Relational mappings, table schemas.
-- [API.md](API.md) — Route specs, HTTP headers.
-- [DEPLOYMENT.md](DEPLOYMENT.md) — Production Vercel & Railway setups.
-- [TECH_STACK.md](TECH_STACK.md) — Full tech audits.
-- [CONTRIBUTING.md](CONTRIBUTING.md) — Conventional commits guidelines.
-- [SECURITY.md](SECURITY.md) — Argon2 settings, threat profiles.
-- [FAQ.md](FAQ.md) — System Q&A.
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) — Resolution guides.
+```env
+NEXT_PUBLIC_API_URL=
+```
 
 ---
 
-## ⭐ Star History
+# Production Deployment
 
-[![Star History Chart](https://api.star-history.com/svg?repos=hiremind/platform&type=Date)](https://star-history.com/#hiremind/platform&Date)
+## Frontend
 
-## 📄 License
-This repository is released under the [MIT License](LICENSE).
+- Vercel
+
+## Backend
+
+- Railway
+
+## Database
+
+- PostgreSQL
+
+## Cache
+
+- Redis
+
+---
+
+# API Documentation
+
+After running locally:
+
+```
+http://localhost:8000/docs
+```
+
+Swagger UI is automatically generated by FastAPI.
+
+---
+
+# Testing
+
+```bash
+pytest
+```
+
+---
+
+# Quality Assurance
+
+✔ Unit Tests
+
+✔ Integration Tests
+
+✔ Authentication Tests
+
+✔ API Validation
+
+✔ Production Build Verification
+
+✔ Dependency Audit
+
+✔ Railway Deployment Ready
+
+✔ Vercel Deployment Ready
+
+---
+
+# Future Roadmap
+
+- AI Interview Agent
+
+- Voice Interviews
+
+- Live Coding Platform
+
+- Candidate Recommendation Engine
+
+- AI Job Description Generator
+
+- Resume Auto Ranking
+
+- AI Hiring Forecast
+
+- HR Analytics Dashboard
+
+- Mobile Application
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+
+2. Create your feature branch.
+
+3. Commit your changes.
+
+4. Push your branch.
+
+5. Open a Pull Request.
+
+---
+
+# Author
+
+**Kritak Prasad**
+
+B.Tech Computer Science Engineering
+
+SRM Institute of Science and Technology
+
+GitHub
+
+https://github.com/kritak0808
+
+LinkedIn
+
+https://linkedin.com/in/kritak-prasad
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+---
+
+# Acknowledgements
+
+- FastAPI
+
+- Next.js
+
+- PostgreSQL
+
+- Redis
+
+- OpenAI
+
+- Google Gemini
+
+- Anthropic
+
+- Cohere
+
+- Railway
+
+- Vercel
+
+- TailwindCSS
+
+- React
+
+---
+
+<p align="center">
+
+Made with ❤️ by Kritak Prasad
+
+Enterprise AI Recruitment Platform
+
+</p>
